@@ -10,3 +10,10 @@ proto-gen:
 
 lint: ## Run golangci-lint with printing to stdout
 	golangci-lint -c .golangci.yaml run --build-tags "musl" ./...
+
+swag-gen:
+	echo ${REGISTRY}
+	swag init -g api/router.go -o api/docs
+
+pull-submodule:
+	git submodule update --init --recursive --remote

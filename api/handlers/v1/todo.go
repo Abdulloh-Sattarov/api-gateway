@@ -2,7 +2,6 @@ package v1
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -14,15 +13,23 @@ import (
 	"github.com/abdullohsattorov/api-gateway/pkg/utils"
 )
 
-// CreateTodo creates todo
-// route /v1/todos [post]
+// CreateTodo ...
+// @Summary CreateTodo
+// @Description This API for creating a new todo
+// @Tags todo
+// @Accept json
+// @Produce json
+// @Param Todo request body models.TodoFunc true "todoCreateRequest"
+// @Success 200 {object} models.Todo
+// @Success 400 {object} models.StandardErrorModel
+// @Success 500 {object} models.StandardErrorModel
+// @Router /v1/todos/ [post]
 func (h *handlerV1) CreateTodo(c *gin.Context) {
 	var (
 		body        pb.TodoFunc
 		jspbMarshal protojson.MarshalOptions
 	)
 	jspbMarshal.UseProtoNames = true
-
 	err := c.ShouldBindJSON(&body)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -46,8 +53,17 @@ func (h *handlerV1) CreateTodo(c *gin.Context) {
 	c.JSON(http.StatusCreated, response)
 }
 
-// GetTodo gets todo by id
-// route /v1/todos/{id} [get]
+// GetTodo ...
+// @Summary GetTodo
+// @Description This API for getting todo detail
+// @Tags todo
+// @Accept json
+// @Produce json
+// @Param id path string true "Id"
+// @Success 200 {object} models.Todo
+// @Success 400 {object} models.StandardErrorModel
+// @Success 500 {object} models.StandardErrorModel
+// @Router /v1/todos/{id} [get]
 func (h *handlerV1) GetTodo(c *gin.Context) {
 	var jspbMarshal protojson.MarshalOptions
 	jspbMarshal.UseProtoNames = true
@@ -71,8 +87,19 @@ func (h *handlerV1) GetTodo(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-// ListTodos returns list of todos
-// route /v1/todos/ [get]
+// ListTodos ...
+// @Summary ListTodos
+// @Description This API for getting list of todos
+// @Tags todo
+// @Accept json
+// @Produce json
+// @Param page query string false "Page"
+// @Param limit query string false "Limit"
+// @Param time query string false "Time"
+// @Success 200 {object} models.ListTodos
+// @Success 400 {object} models.StandardErrorModel
+// @Success 500 {object} models.StandardErrorModel
+// @Router /v1/todos [get]
 func (h *handlerV1) ListTodos(c *gin.Context) {
 	queryParams := c.Request.URL.Query()
 
@@ -107,7 +134,6 @@ func (h *handlerV1) ListTodos(c *gin.Context) {
 		}
 		c.JSON(http.StatusOK, response)
 	} else {
-		fmt.Println("wow")
 		response, err := h.serviceManager.TodoService().List(
 			ctx, &pb.ListReq{
 				Limit: params.Limit,
@@ -124,10 +150,21 @@ func (h *handlerV1) ListTodos(c *gin.Context) {
 	}
 }
 
-// UpdateTodo updates todo by id
-// route /v1/todos/{id} [put]
+// UpdateTodo ...
+// @Summary UpdateTodo
+// @Description This API for updating todo
+// @Tags todo
+// @Accept json
+// @Produce json
+// @Param id path string true "Id"
+// @Param Todo request body models.TodoFunc true "todoUpdateRequest"
+// @Success 200 {object} models.Todo
+// @Success 400 {object} models.StandardErrorModel
+// @Success 500 {object} models.StandardErrorModel
+// @Router /v1/todos/{id} [put]
 func (h *handlerV1) UpdateTodo(c *gin.Context) {
-	var (
+	var ( // @Param Todo request body models.TodoFunc true "todoUpdateRequest"
+
 		body        pb.TodoFunc
 		jspbMarshal protojson.MarshalOptions
 	)
@@ -158,8 +195,17 @@ func (h *handlerV1) UpdateTodo(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-// DeleteTodo deletes todo by id
-// route /v1/todos/{id} [delete]
+// DeleteTodo ...
+// @Summary DeleteTodo
+// @Description This API for deleting todo
+// @Tags todo
+// @Accept json
+// @Produce json
+// @Param id path string true "Id"
+// @Success 200
+// @Success 400 {object} models.StandardErrorModel
+// @Success 500 {object} models.StandardErrorModel
+// @Router /v1/todos/{id} [delete]
 func (h *handlerV1) DeleteTodo(c *gin.Context) {
 	var jspbMarshal protojson.MarshalOptions
 	jspbMarshal.UseProtoNames = true
